@@ -15,7 +15,8 @@ function* loginUser({authData}) {
 }
 
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export default [
+const userSagas = [
     takeEvery(LOGIN_USER_REQUEST, loginUser)
 ];
+
+export default userSagas

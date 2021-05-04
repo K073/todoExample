@@ -35,13 +35,9 @@ const store = createStore(createRootReducer(history), persistedState, enhancers)
 sagaMiddleware.run(rootSaga);
 
 store.subscribe(() => {
-  const existingUser = store.getState().users.location;
+  const existingUser = store.getState().user;
 
-  const users = {
-    location: existingUser ? existingUser : null
-  };
-
-  saveState({users});
+  saveState({user: existingUser});
 });
 
 configureInterceptors(store);
