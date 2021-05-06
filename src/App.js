@@ -12,14 +12,16 @@ function App() {
   return (
       <NoSsr>
           <CssBaseline />
-          <Switch>
-              <Container>
-                  <Header/>
-                  <Route path="/" component={TodoList}/>
-                  <Route path="/create" component={TodoCreate} />
-                  <Route path="/login" component={Auth}/>
-              </Container>
-          </Switch>
+          <Container>
+              <Switch>
+                  <Route exact path="/login" component={Auth}/>
+                  <Route path="/">
+                      <Header/>
+                      <TodoList/>
+                      <Route path="/create" component={TodoCreate} />
+                  </Route>
+              </Switch>
+          </Container>
       </NoSsr>
   );
 }
