@@ -8,15 +8,13 @@ import reportWebVitals from './reportWebVitals';
 import store, {history} from "./store/configureStore";
 
 ReactDOM.render(
-  <React.StrictMode>
-      <Provider
-          store={store}>
-          <ConnectedRouter
-              history={history}>
-              <App />
-          </ConnectedRouter>
-      </Provider>
-  </React.StrictMode>,
+    <Provider
+        store={store}>
+        <ConnectedRouter
+            history={history}>
+            <App />
+        </ConnectedRouter>
+    </Provider>,
   document.getElementById('root')
 );
 

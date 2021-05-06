@@ -1,15 +1,14 @@
-import {LOGIN_USER_FAILURE, LOGIN_USER_SUCCESS} from "../actions/userActions";
+import {FETCH_TODO_LIST_SUCCESS} from "../actions/todoActions";
+
 
 const initialState = {
-    tasks: null
+    tasks: []
 }
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case LOGIN_USER_SUCCESS:
-            return {...state, userData: action.userData};
-        case LOGIN_USER_FAILURE:
-            return {...state, userData: null}
+        case FETCH_TODO_LIST_SUCCESS:
+            return {...state, tasks: action.tasks}
         default:
             return state;
     }

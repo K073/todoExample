@@ -2,12 +2,13 @@ import {put, takeEvery} from 'redux-saga/effects';
 import axios from '../../settings/axios-api'
 import formDataBuilder from "../../utils/formDataBuilder";
 import routes from "../../settings/routes";
+import {replace} from "connected-react-router";
 import {
     CREATE_TODO_REQUEST,
     createTodoFailure,
     createTodoSuccess, EDIT_TODO_REQUEST, editTodoFailure,
     editTodoSuccess, FETCH_TODO_LIST_REQUEST,
-    fetchTodoListFailure,
+    fetchTodoListFailure, fetchTodoListRequest,
     fetchTodoListSuccess
 } from "../actions/todoActions";
 
@@ -23,8 +24,10 @@ function* fetchTodoList({sort_field, sort_direction, page}) {
 function* createTodo({todoData}) {
     try {
         const formData = formDataBuilder(todoData)
-        const response = yield axios.post(routes.list, formData)
+        const response = yield axios.post(routes.create, formData)
         yield put(createTodoSuccess(response.data.message))
+        yield put(fetchTodoListRequest())
+        yield put(replace('/'))
     } catch (e) {
         yield put(createTodoFailure(e))
     }

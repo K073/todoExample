@@ -1,14 +1,14 @@
 import {Switch} from "react-router-dom";
-import {Redirect, Route, withRouter} from "react-router";
+import {Route, withRouter} from "react-router";
 import TodoList from "./containers/TodoList";
 import Auth from "./containers/Auth";
 import TodoCreate from "./containers/TodoCreate";
-import {Backdrop, Container, CssBaseline, Fade, Modal, NoSsr} from "@material-ui/core";
+import {Container, CssBaseline, NoSsr} from "@material-ui/core";
 import React from "react";
 import Header from "./components/Header";
 
 
-function App(props) {
+function App() {
   return (
       <NoSsr>
           <CssBaseline />
