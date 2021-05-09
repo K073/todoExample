@@ -2,6 +2,8 @@ import React from "react";
 import {AppBar, Button, Link, Toolbar, Typography} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core";
 import {Link as RouterLink} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {loginUserFailure} from "../store/actions/userActions";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -18,6 +20,10 @@ const useStyles = makeStyles((theme) => ({
 
 function Header() {
     const classes = useStyles();
+    const dispatch = useDispatch();
+    const userData = useSelector(state => state.user.userData)
+
+
 
     return <div className={classes.root}>
         <AppBar position="static">
@@ -34,7 +40,7 @@ function Header() {
                         </Link>
                     </Typography>
                 </nav>
-                <Button color="inherit" component={RouterLink} to={"/login"}>Login</Button>
+                {userData?.message?.token ? <Button color="inherit" onClick={() => dispatch(loginUserFailure())} >Exit</Button> : <Button color="inherit" component={RouterLink} to={"/login"}>Login</Button>}
             </Toolbar>
         </AppBar>
     </div>

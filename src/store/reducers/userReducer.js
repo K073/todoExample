@@ -2,7 +2,7 @@ import {LOGIN_USER_FAILURE, LOGIN_USER_SUCCESS} from "../actions/userActions";
 
 
 const initialState = {
-    userData: null
+    userData: null,
 }
 
 const reducer = (state = initialState, action) => {

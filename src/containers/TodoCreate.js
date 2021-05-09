@@ -1,7 +1,8 @@
-import React, {useState} from "react";
+import React from "react";
 import {Backdrop, Button, Fade, Grid, makeStyles, Modal, TextField} from "@material-ui/core";
 import {useDispatch} from "react-redux";
 import {createTodoRequest} from "../store/actions/todoActions";
+import useForm from "../utils/useForm";
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -27,27 +28,6 @@ function TodoCreate (props) {
         text: 'text'
     }
 
-    const [values, setValues] = useState({})
-    const [errors, setErrors] = useState({})
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const inputOnchange = ({target: {value}}, name) => {
-        const errors = validate({...values, [name]: value});
-        setValues({...values, [name]: value})
-        setErrors(errors);
-    }
-
-    const submit = (e) => {
-        e.preventDefault()
-        const errors = validate(values)
-        setIsSubmitting(true)
-        if (Object.keys(errors).length === 0) {
-            dispatch(createTodoRequest(values))
-        } else {
-            setErrors(errors)
-        }
-    }
-
     const validate = (values) => {
         let errors = {};
         if (!values[keys.email]) {
@@ -63,6 +43,14 @@ function TodoCreate (props) {
         }
         return errors;
     }
+
+    const {
+        values,
+        errors,
+        submit,
+        isSubmitting,
+        inputOnchange
+    } = useForm((values) => dispatch(createTodoRequest(values)), validate, keys)
 
     return (
         <Modal
