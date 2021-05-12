@@ -1,9 +1,9 @@
 import React, {useState} from "react";
-import {connect} from "react-redux";
-import {fetchTodoListRequest} from "../store/actions/todoActions";
+import {connect, useSelector} from "react-redux";
+import {editTodoRequest, fetchTodoListRequest} from "../store/actions/todoActions";
 import {
-    Box,
-    Collapse, IconButton,
+    Box, Button,
+    Collapse, Grid, IconButton,
     Paper,
     Table,
     TableBody,
@@ -11,7 +11,7 @@ import {
     TableContainer,
     TableFooter, TableHead,
     TablePagination,
-    TableRow, TableSortLabel
+    TableRow, TableSortLabel, TextareaAutosize
 } from "@material-ui/core";
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
@@ -42,64 +42,70 @@ class TodoList extends React.PureComponent {
         this.props.fetchTodoListRequest(sort_field, sort_direction, page + 1)
     }
 
+    todoChange = id => value => {
+        this.props.editTodoRequest(id, value)
+    }
+
     render() {
         const {tasks, count} = this.props;
 
         return <TableContainer component={Paper}>
             <Table >
                 <TableHead>
-                    <TableCell/>
-                    <TableCell
-                        sortDirection={this.state.sort_field === 'id'? this.state.sort_direction : 'asc'}
-                    >
-                        <TableSortLabel
-                            active={this.state.sort_field === 'id'}
-                            direction={this.state.sort_field === 'id'? this.state.sort_direction : 'asc'}
-                            onClick={this.handleSort('id')}
+                    <TableRow>
+                        <TableCell/>
+                        <TableCell
+                            sortDirection={this.state.sort_field === 'id'? this.state.sort_direction : 'asc'}
                         >
-                            ID
-                        </TableSortLabel>
-                    </TableCell>
-                    <TableCell
-                        align="center"
-                        sortDirection={this.state.sort_field === 'username'? this.state.sort_direction : 'asc'}
-                    >
-                        <TableSortLabel
-                            active={this.state.sort_field === 'username'}
-                            direction={this.state.sort_field === 'username'? this.state.sort_direction : 'asc'}
-                            onClick={this.handleSort('username')}
+                            <TableSortLabel
+                                active={this.state.sort_field === 'id'}
+                                direction={this.state.sort_field === 'id'? this.state.sort_direction : 'asc'}
+                                onClick={this.handleSort('id')}
+                            >
+                                ID
+                            </TableSortLabel>
+                        </TableCell>
+                        <TableCell
+                            align="center"
+                            sortDirection={this.state.sort_field === 'username'? this.state.sort_direction : 'asc'}
                         >
-                            Name
-                        </TableSortLabel>
-                    </TableCell>
-                    <TableCell
-                        align="center"
-                        sortDirection={this.state.sort_field === 'email'? this.state.sort_direction : 'asc'}
-                    >
-                        <TableSortLabel
-                            active={this.state.sort_field === 'email'}
-                            direction={this.state.sort_field === 'email'? this.state.sort_direction : 'asc'}
-                            onClick={this.handleSort('email')}
+                            <TableSortLabel
+                                active={this.state.sort_field === 'username'}
+                                direction={this.state.sort_field === 'username'? this.state.sort_direction : 'asc'}
+                                onClick={this.handleSort('username')}
+                            >
+                                Name
+                            </TableSortLabel>
+                        </TableCell>
+                        <TableCell
+                            align="center"
+                            sortDirection={this.state.sort_field === 'email'? this.state.sort_direction : 'asc'}
                         >
-                            Email
-                        </TableSortLabel>
-                    </TableCell>
-                    <TableCell
-                        align="center"
-                        sortDirection={this.state.sort_field === 'status'? this.state.sort_direction : 'asc'}
-                    >
-                        <TableSortLabel
-                            active={this.state.sort_field === 'status'}
-                            direction={this.state.sort_field === 'status'? this.state.sort_direction : 'asc'}
-                            onClick={this.handleSort('status')}
+                            <TableSortLabel
+                                active={this.state.sort_field === 'email'}
+                                direction={this.state.sort_field === 'email'? this.state.sort_direction : 'asc'}
+                                onClick={this.handleSort('email')}
+                            >
+                                Email
+                            </TableSortLabel>
+                        </TableCell>
+                        <TableCell
+                            align="center"
+                            sortDirection={this.state.sort_field === 'status'? this.state.sort_direction : 'asc'}
                         >
-                            status
-                        </TableSortLabel>
-                    </TableCell>
+                            <TableSortLabel
+                                active={this.state.sort_field === 'status'}
+                                direction={this.state.sort_field === 'status'? this.state.sort_direction : 'asc'}
+                                onClick={this.handleSort('status')}
+                            >
+                                status
+                            </TableSortLabel>
+                        </TableCell>
+                    </TableRow>
                 </TableHead>
                 <TableBody>
                     {tasks.map((row) => (
-                        <TodoRow {...row}/>
+                        <TodoRow key={row.id} edit={this.todoChange(row.id)} {...row}/>
                     ))}
                 </TableBody>
                 <TableFooter>
@@ -125,9 +131,17 @@ class TodoList extends React.PureComponent {
     }
 }
 
-function TodoRow ({id, username, email, status, text}) {
+function TodoRow ({id, username, email, status, text, edit}) {
+    const userData = useSelector(state => state.user.userData)
 
+    const minCompleteStatusNumber = 10
     const [open, setOpen] = useState(false);
+    const [updatedText, setText] = useState(text);
+    const [complete, setComplete] = useState(status >= minCompleteStatusNumber)
+
+    const changed = text !== updatedText;
+
+    const currentStatus = complete ? changed ? 11 : 10 : changed ? 1 : 0;
 
     return <React.Fragment>
         <TableRow>
@@ -152,8 +166,36 @@ function TodoRow ({id, username, email, status, text}) {
         <TableRow>
             <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
                 <Collapse in={open} timeout="auto" unmountOnExit>
-                    <Box margin={1}>
-                        {text}
+                    <Box justify="space-between" margin={2}>
+                        <Grid
+                            container
+                            direction="row"
+                            justify="space-between"
+                            alignItems="center">
+                            <Grid item xs={12}>
+                                {!userData ? text :
+                                    <TextareaAutosize
+                                        style={{width: '100%'}}
+                                    value={updatedText}
+                                    rowsMax={4}
+                                    onChange={(e) => setText(e.target.value)}
+                                    />}
+                            </Grid>
+                            <Grid item>
+                                {userData && <Button
+                                    color={complete ? "secondary" : "primary"}
+                                    onClick={() => setComplete(!complete)}
+                                >{!complete ? '✓ Complete' : '☓ uncompleted'}</Button>}
+                            </Grid>
+                            <Grid item>
+                                {userData && <Button
+                                    onClick={() => edit({text: updatedText,
+                                            token: userData.message.token,
+                                        status: currentStatus > status ? currentStatus : status})}
+                                    variant={'contained'}
+                                    color={"primary"}>Save</Button>}
+                            </Grid>
+                        </Grid>
                     </Box>
                 </Collapse>
             </TableCell>
@@ -169,7 +211,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-    fetchTodoListRequest
+    fetchTodoListRequest,
+    editTodoRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodoList);
