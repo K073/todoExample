@@ -7,7 +7,7 @@ import rootSaga from "./rootSaga";
 import createRootReducer from "./rootReducer";
 import configureInterceptors from "./interceptors";
 import config, {PRODUCTION_ENV} from "../settings/config";
-import {loginUserFailure, loginUserSuccess} from "./actions/userActions";
+import {loginUserSuccess} from "./actions/userActions";
 
 const getComposeEnhancersFunction = () => {
   if (config.env === PRODUCTION_ENV) {
