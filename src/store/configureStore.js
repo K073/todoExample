@@ -7,6 +7,7 @@ import rootSaga from "./rootSaga";
 import createRootReducer from "./rootReducer";
 import configureInterceptors from "./interceptors";
 import config, {PRODUCTION_ENV} from "../settings/config";
+import {loginUserFailure, loginUserSuccess} from "./actions/userActions";
 
 const getComposeEnhancersFunction = () => {
   if (config.env === PRODUCTION_ENV) {
@@ -36,6 +37,15 @@ sagaMiddleware.run(rootSaga);
 
 store.subscribe(() => {
   const existingUser = store.getState().user;
+
+
+  window.addEventListener('storage', function(e) {
+    const localUser = JSON.parse(localStorage.getItem('state')).user;
+    const currentUser = store.getState().user;
+    if (localUser !== currentUser) {
+      store.dispatch(loginUserSuccess(localUser.userData))
+    }
+  });
 
   saveState({user: existingUser});
 });

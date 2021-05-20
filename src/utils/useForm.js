@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const useForm = (callback, validate, keys) => {
+const useForm = (callback, validate) => {
 
     const [values, setValues] = useState({})
     const [errors, setErrors] = useState({})

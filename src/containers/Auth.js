@@ -61,6 +61,7 @@ function Auth(){
                         fullWidth
                         label="Password"
                         variant="outlined"
+                        type="password"
                         value={values[keys.password] || ''}
                         onChange={(e) => inputOnchange(e, keys.password)}
                         error={!!errors[keys.password] && isSubmitting}
